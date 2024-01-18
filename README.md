@@ -12,7 +12,6 @@ An extendable file generator
   - [Installation](#installation)
     - [Extending the CLI](#extending-the-cli)
   - [Dependencies](#dependencies)
-  - [Interactive Docs](#interactive-docs)
   - [To Do](#to-do)
   - [Pull requests](#pull-requests)
   - [LICENSE](#license)
