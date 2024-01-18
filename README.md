@@ -74,7 +74,7 @@ get.add_command(foo)
 ```
 4. **Access your commands via your top-most command group.**
 ```
-django-clite get foo
+geny get foo
 ```
 
 **NOTE:** If you would like to skip a plugin/command from being auto-discovered, simply rename the package by either
