@@ -20,14 +20,7 @@ def dockerfile(ctx, docker_compose):
             File(
                 name="docker-compose.yaml",
                 template="docker/docker-compose.tpl",
-                context={
-                    "services": [
-                        "celery",
-                        "kafka",
-                        "postgres",
-                        "rabbitmq" "redis",
-                    ],
-                },
+                context={},
             )
         )
 
