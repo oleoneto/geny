@@ -20,8 +20,11 @@ class TemplateParser(TemplateParserProtocol):
         self.context = context
         self.templates = templates_dir
 
-    def parse_file(self, filepath, variables) -> str:
+    def parse_file(self, filepath, variables, templates: list[Path] = None) -> str:
         variables.update(self.context)
+
+        if templates is not None:
+            self.templates = templates + self.templates
 
         environment = Environment(
             loader=FileSystemLoader(self.templates),
