@@ -1,7 +1,6 @@
 import click
 import logging
 from pathlib import Path
-from geny import VERSION
 from geny.extensions.combined import AliasedAndDiscoverableGroup
 from geny.core.templates.template import TemplateParser
 
@@ -20,7 +19,7 @@ from geny.core.templates.template import TemplateParser
     help="Template directory.",
     type=click.Path(),
 )
-@click.version_option(version=VERSION)
+@click.version_option(package_name="geny")
 @click.pass_context
 def cli(ctx, debug, dry, force, verbose, templates_dir):
     """
