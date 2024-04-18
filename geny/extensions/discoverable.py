@@ -82,6 +82,9 @@ class DiscoverableGroup(MultiCommand):
             execute_command(fn, ns)
         except FileNotFoundError:
             try:
+                if PLUGINS_FOLDER is None:
+                    return
+
                 pfn = os.path.join(PLUGINS_FOLDER, name, "main.py")
                 execute_command(pfn, ns)
             except FileNotFoundError or TypeError:
