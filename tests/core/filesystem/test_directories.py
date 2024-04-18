@@ -45,7 +45,7 @@ class DirectoryTestCase(unittest.TestCase):
             self.assertEqual("file1.txt", d.files[0].name)
             self.assertEqual("file2.md", d.files[1].name)
 
-            self.assertEqual(["file1.txt", "folder", "file2.md"], os.listdir(name))
+            self.assertEqual(sorted(["file1.txt", "folder", "file2.md"]), sorted(os.listdir(name)))
 
     def test_create_directory_with_template_files(self):
         with runner.isolated_filesystem():
@@ -75,7 +75,7 @@ class DirectoryTestCase(unittest.TestCase):
             self.assertEqual(file1, d.files[0])
             self.assertEqual(file2, d.files[1])
 
-            self.assertEqual([file1.name, dir1.name, file2.name], os.listdir(parent))
+            self.assertEqual(sorted([file1.name, dir1.name, file2.name]), sorted(os.listdir(parent)))
 
             self.assertEqual("File 1\n", file1.path(parent=d.path()).read_text())
             self.assertEqual("File 2\n", file2.path(parent=d.path()).read_text())
