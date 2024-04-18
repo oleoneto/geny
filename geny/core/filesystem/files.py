@@ -49,8 +49,10 @@ class File:
         path = self.path(parent)
 
         if path.exists():
-            logger.error(f"File already exists: {path}")
-            return
+            if not kwargs.get('GENY_ENABLE_FORCE', False):
+                logger.error(f"File already exists: {path}")
+                return
+            logger.debug(f"Overriding {path}")
 
         contents = self.contents(**kwargs)
 
