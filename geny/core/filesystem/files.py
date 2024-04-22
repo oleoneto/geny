@@ -5,6 +5,7 @@ from pathlib import Path
 from geny.core.logger import logger
 from geny.core.templates.template import TemplateParser
 from geny.core.decorators.error_handler import halt_on_error
+from geny.core.filesystem.transformations import FileTransformation
 
 
 class File:
@@ -42,7 +43,7 @@ class File:
         return value
 
     @halt_on_error
-    def create(self, parent: Path = None, after_hooks: list[Callable] = None, **kwargs):
+    def create(self, parent: Path = None, after_hooks: list[FileTransformation] = None, **kwargs):
         if after_hooks is None:
             after_hooks = []
 
@@ -76,11 +77,12 @@ class File:
 
             logger.debug(f"Add contents to {path.absolute()}")
 
-            [hook(parent, **kwargs) for hook in after_hooks]
+            for hook in after_hooks:
+                hook.run()
 
     @halt_on_error
     def destroy(
-        self, parent: Path = None, after_hooks: list[Callable] = None, **kwargs
+        self, parent: Path = None, after_hooks: list[FileTransformation] = None, **kwargs
     ):
         if after_hooks is None:
             after_hooks = []
@@ -91,7 +93,8 @@ class File:
 
         path.unlink(missing_ok=True)
 
-        [hook(parent, **kwargs) for hook in after_hooks]
+        for hook in after_hooks:
+            hook.run()
 
     def __str__(self) -> str:
         return self.name

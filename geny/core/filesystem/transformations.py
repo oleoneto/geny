@@ -20,12 +20,21 @@ class MoveFile(FileTransformation):
 
 
 class DeleteFile(FileTransformation):
-    def __init__(self, file: str):
-        self.file = file
+    def __init__(self, filename: str):
+        self.filename = filename
 
     def run(self):
-        file = Path(self.file)
+        file = Path(self.filename)
         file.unlink(missing_ok=True)
+
+
+class TouchFile(FileTransformation):
+    def __init__(self, filename: str):
+        self.filename = filename
+
+    def run(self):
+        file = Path(self.filename)
+        file.touch(exist_ok=True)
 
 
 class AddLineToFile(FileTransformation):
