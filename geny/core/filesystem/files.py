@@ -1,5 +1,5 @@
 # core:filesystem
-from typing import Callable
+import re
 from pathlib import Path
 
 from geny.core.logger import logger
@@ -24,19 +24,22 @@ class File:
         return self._template
 
     def contents(self, **kwargs) -> str:
-        if self.template != "":
-            self.context.update(**kwargs)
+        is_content_literal = self._content != ""
+        is_template_literal = re.match(".*{{.+}}.*", self.template)
+        is_template_file = self.template != "" and not is_template_literal
 
-            content = TemplateParser().parse_file(
-                filepath=self.template,
-                variables=self.context,
-            )
+        if (is_template_literal and is_content_literal) or (is_template_file and is_content_literal):
+            raise AssertionError("cannot specify both template and content for File")
 
-            return content
+        self.context.update(**kwargs)
 
-        content = TemplateParser().parse_string(self._content, variables=self.context)
+        if is_template_file:
+            return TemplateParser().parse_file(filepath=self.template, variables=self.context)
 
-        return content
+        return TemplateParser().parse_string(
+            self.template if is_template_literal else self._content,
+            variables=self.context
+        )
 
     def path(self, parent: Path = None) -> Path:
         value = Path(self.name) if parent is None else parent / self.name

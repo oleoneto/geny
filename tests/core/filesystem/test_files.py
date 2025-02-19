@@ -18,7 +18,7 @@ class FileTestCase(unittest.TestCase):
 
             self.assertTrue(file.path().exists())
             self.assertTrue(file.path().is_file())
-            self.assertEqual("Hello world!", file.contents())
+            self.assertEqual("Hello world!\n", file.path().read_text())
 
     def test_create_file_and_intermittent_directories(self):
         with runner.isolated_filesystem():
@@ -31,7 +31,7 @@ class FileTestCase(unittest.TestCase):
 
             self.assertTrue(file.path().exists())
             self.assertTrue(file.path().is_file())
-            self.assertEqual("Hello world!", file.contents())
+            self.assertEqual("Hello world!\n", file.path().read_text())
 
     def test_delete_file(self):
         with runner.isolated_filesystem():
@@ -43,6 +43,7 @@ class FileTestCase(unittest.TestCase):
             file.create()
 
             self.assertTrue(file.path().exists())
+            self.assertEqual("Hello world!\n", file.path().read_text())
 
             file.destroy()
 

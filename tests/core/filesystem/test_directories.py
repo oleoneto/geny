@@ -28,24 +28,31 @@ class DirectoryTestCase(unittest.TestCase):
                 name,
                 children=[
                     File(name="file1.txt"),
-                    File(name="file2.md"),
+                    File(name="file2.md", template="# {{ name }}"),
                     Directory("folder"),
                 ],
             )
 
-            d.create()
+            d.create(**{"name": "Bookstore"})
 
             self.assertTrue(d.path().exists())
             self.assertTrue(d.path().is_dir())
 
+            # Sub-directories
             self.assertEqual(1, len(d.dirs))
-            self.assertEqual(2, len(d.files))
-
             self.assertEqual("folder", d.dirs[0].name)
+            self.assertTrue(d.dirs[0].path(d.path()).exists())
+
+            # Files
+            self.assertEqual(2, len(d.files))
             self.assertEqual("file1.txt", d.files[0].name)
             self.assertEqual("file2.md", d.files[1].name)
 
-            self.assertEqual(sorted(["file1.txt", "folder", "file2.md"]), sorted(os.listdir(name)))
+            for file in d.files:
+                self.assertTrue(file.path(d.path()).exists())
+                self.assertTrue(file.path(d.path()).is_file())
+
+            self.assertEqual("# Bookstore\n", d.files[1].path(d.path()).read_text())
 
     def test_create_directory_with_template_files(self):
         with runner.isolated_filesystem():

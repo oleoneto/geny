@@ -61,8 +61,13 @@ class Directory:
         return tree
 
     def path(self, parent: Path = None) -> Path:
-        value = Path(self.name) if parent is None else parent / self.name
-        return value
+        if parent is None:
+            return Path(self.name)
+
+        if type(parent) is str:
+            parent = Path(parent)
+
+        return parent / self.name
 
     @halt_on_error
     def create(self, parent: Path = None, after_hooks: list[Callable] = None, **kwargs):
