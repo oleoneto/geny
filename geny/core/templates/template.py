@@ -15,8 +15,6 @@ class TemplateParser(TemplateParserProtocol):
         if templates_dir is None:
             templates_dir = []
 
-        self.project = context.get("project", "")
-        self.app = context.get("app", "")
         self.context = context
         self.templates = templates_dir
 
