@@ -69,10 +69,10 @@ class AddImportToFile(AddLineToFile):
             return
 
         try:
-            with open(self.target, mode="r+") as f:
+            header_border = 0
+            with open(self.target, mode='r+') as f:
                 lines = f.readlines() or []
 
-                header_border = 0
                 for idx, line in enumerate(lines):
                     if self.prevent_duplicates and line.startswith(self.statement):
                         return
@@ -87,8 +87,9 @@ class AddImportToFile(AddLineToFile):
                 # Import statement should go before first 'program line'
                 lines.insert(header_border, f"{self.statement}\n\n")
 
-                f.truncate(0)
+            with open(self.target, 'w') as f:
                 f.writelines(lines)
+                f.close()
         except (FileNotFoundError, OSError) as _:
             pass
 
