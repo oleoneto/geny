@@ -64,7 +64,7 @@ class Directory:
         if parent is None:
             return Path(self.name)
 
-        if type(parent) is str:
+        if isinstance(parent, str):
             parent = Path(parent)
 
         return parent / self.name

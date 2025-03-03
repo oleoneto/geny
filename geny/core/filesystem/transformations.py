@@ -1,4 +1,5 @@
 # core:filesystem:transformations
+import re
 from typing import Protocol
 from pathlib import Path
 
@@ -62,6 +63,36 @@ class AddLineToFile(FileTransformation):
             pass
 
 
+class AddImportToFile(AddLineToFile):
+    def run(self):
+        if self.statement is None or self.statement == "":
+            return
+
+        try:
+            with open(self.target, mode="r+") as f:
+                lines = f.readlines() or []
+
+                header_border = 0
+                for idx, line in enumerate(lines):
+                    if self.prevent_duplicates and line.startswith(self.statement):
+                        return
+
+                    # Matches against comments and import statements
+                    if re.match('(^\s+$|^#.*|^"""|^import [a-zA-Z_.]+( as [a-zA-Z_.]+)?(\s+#.*)?$)|(^from [a-zA-Z_.]+ import [a-zA-Z_.]+( as [a-zA-Z_.]+)?(\s+#.*)?$)', line):
+                        header_border = idx
+                    else:
+                        # Found a 'program line'!!
+                        break
+
+                # Import statement should go before first 'program line'
+                lines.insert(header_border, f"{self.statement}\n\n")
+
+                f.truncate(0)
+                f.writelines(lines)
+        except (FileNotFoundError, OSError) as _:
+            pass
+
+
 class RemoveLineFromFile(FileTransformation):
     def __init__(self, target: Path, statement: str):
         self.target = target
@@ -84,3 +115,4 @@ class RemoveLineFromFile(FileTransformation):
                 f.writelines(lines)
         except (FileNotFoundError, OSError) as _:
             pass
+
